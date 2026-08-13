@@ -28,12 +28,24 @@ icon and its name. Below 860px the labels drop and the chips become icon-only
 squares — the labelled row needs ~517px of centre track, and under that the
 wordmark starts getting squeezed.
 
-## Caching
+## Caching — bump `?v=N` when an asset changes
 
-`styles.css` is linked with a `?v=N` query and served `no-cache`. On a no-build
-static site a cached stylesheet will otherwise mask a deploy — it did exactly
-that during development, showing old layout against new markup. **Bump the `v=`
-number in `index.html` whenever `styles.css` changes.**
+Every mutable asset is referenced with a version query:
+
+```
+styles.css?v=3        images/sam-academic.jpg?v=2
+og.jpg?v=2            images/sam-red.jpg?v=2
+```
+
+This is load-bearing, not cosmetic. `/images/*` is served
+`max-age=31536000, immutable`, which is only safe *because* the URL changes when
+the bytes do — without the query, a returning visitor would be pinned to the old
+photos for a year. Both failure modes bit during development: a cached
+stylesheet showed old layout against new markup, and cached portraits showed the
+pre-alignment crops long after the files were fixed.
+
+So: **edit an asset → bump its `?v=` in `index.html`.** For images, keep the
+preload `href` byte-identical to the `<img src>` or the browser fetches twice.
 
 On screens ≤560px the panels stack and the blurb is dropped: the portrait is
 the point, and the kicker + title + button already carry the choice.
