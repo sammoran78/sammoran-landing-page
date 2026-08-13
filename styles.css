@@ -1,0 +1,469 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   SAM MORAN — landing / router
+   A diptych. Swiss grid and hairline rules borrowed from sammoran.phd, warm
+   palette borrowed from sammoran.music, so this page reads as the shared
+   parent of both rather than a third identity.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Surface — the academic site's paper stock */
+  --ivory: #f2efe7;
+  --paper: #faf8f1;
+  --ink: #151515;
+  --ink-soft: rgba(21, 21, 21, 0.62);
+  --rule: rgba(21, 21, 21, 0.24);
+
+  /* Shared accents. The two sites already agree on a warm red and a gold;
+     those are the only colours this page is allowed to use. */
+  --red: #f03727;
+  --yellow: #ffc515;
+  --cream: #fff7ec;
+
+  --sans: Arial, Helvetica, sans-serif;
+  --serif: "Iowan Old Style", "Baskerville", Georgia, serif;
+
+  /* Rhythm */
+  --frame: 10px;
+  --gutter: clamp(20px, 3.2vw, 54px);
+  --bar-h: clamp(52px, 6vh, 74px);
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --swell: 760ms;
+}
+
+* { box-sizing: border-box; }
+
+html { height: 100%; }
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  background: var(--ivory);
+  color: var(--ink);
+  font-family: var(--sans);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+a { color: inherit; text-decoration: none; }
+img { display: block; width: 100%; height: auto; }
+h1, p { margin: 0; }
+::selection { color: var(--paper); background: var(--red); }
+
+:focus-visible {
+  outline: 3px solid var(--yellow);
+  outline-offset: -6px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ── Frame + grain ───────────────────────────────────────────────────────── */
+/* The inset paper border is the one motif carried verbatim from sammoran.phd. */
+
+.frame {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  border: var(--frame) solid var(--paper);
+  box-shadow: inset 0 0 0 1px rgba(21, 21, 21, 0.15);
+}
+
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  pointer-events: none;
+  opacity: 0.32;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.42'/%3E%3C/svg%3E");
+}
+
+/* ── Rule bars ───────────────────────────────────────────────────────────── */
+
+.bar {
+  position: relative;
+  z-index: 20;
+  min-height: var(--bar-h);
+  display: flex;
+  align-items: center;
+  gap: var(--gutter);
+  padding: 10px calc(var(--gutter) + var(--frame));
+  background: var(--ivory);
+}
+
+.bar--top { border-bottom: 1px solid var(--ink); }
+.bar--bottom { border-top: 1px solid var(--ink); }
+
+.bar__mid,
+.bar__end,
+.socials a,
+.email,
+.panel__kicker,
+.panel__cta-label,
+.panel__edge {
+  font-size: 0.62rem;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.bar__mid { margin-inline: auto; color: var(--ink-soft); }
+.bar__end { color: var(--ink-soft); white-space: nowrap; }
+
+.wordmark {
+  font-size: 1.45rem;
+  font-weight: 900;
+  letter-spacing: -0.08em;
+  line-height: 1;
+}
+.wordmark__reg {
+  margin-left: 3px;
+  color: var(--red);
+  font-size: 0.42em;
+  vertical-align: top;
+}
+
+/* Socials — bordered chips, the same device the academic header uses */
+
+.socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.socials a {
+  padding: 8px 12px;
+  border: 1px solid var(--ink);
+  color: var(--ink);
+  transition: color 220ms var(--ease), background-color 220ms var(--ease);
+}
+.socials a:hover,
+.socials a:focus-visible {
+  color: var(--paper);
+  background: var(--ink);
+}
+
+.email {
+  margin-left: auto;
+  position: relative;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+.email::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 100%; bottom: -5px;
+  height: 2px;
+  background: var(--red);
+  transition: right 260ms var(--ease);
+}
+.email:hover, .email:focus-visible { color: var(--ink); }
+.email:hover::after, .email:focus-visible::after { right: 0; }
+
+/* ── The split ───────────────────────────────────────────────────────────── */
+
+.split {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 0;
+  transition: grid-template-columns var(--swell) var(--ease);
+}
+
+/* One side leans in when the other is engaged. :has() keeps this in CSS —
+   no script needed for the whole page. */
+.split:has(.panel--research:hover),
+.split:has(.panel--research:focus-visible) { grid-template-columns: 1.24fr 0.76fr; }
+
+.split:has(.panel--music:hover),
+.split:has(.panel--music:focus-visible) { grid-template-columns: 0.76fr 1.24fr; }
+
+/* ── Panels ──────────────────────────────────────────────────────────────── */
+
+.panel {
+  --panel-bg: var(--ivory);
+  --panel-accent: var(--red);
+
+  position: relative;
+  display: block;
+  overflow: hidden;
+  min-height: 0;
+  background: var(--panel-bg);
+  isolation: isolate;
+}
+
+.panel--music {
+  --panel-bg: var(--cream);
+  --panel-accent: var(--red);
+}
+
+.panel + .panel { border-left: 1px solid var(--ink); }
+
+/* Media */
+
+.panel__media {
+  position: absolute;
+  inset: 0;
+  display: block;
+  overflow: hidden;
+  z-index: -2;
+}
+.panel__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 22%;
+  filter: grayscale(0.78) contrast(1.05) brightness(0.98);
+  transform: scale(1.04);
+  transition: filter var(--swell) var(--ease), transform 1100ms var(--ease);
+}
+.panel--music .panel__media img { object-position: 50% 30%; }
+
+.panel:hover .panel__media img,
+.panel:focus-visible .panel__media img {
+  filter: grayscale(0) contrast(1) brightness(1);
+  transform: scale(1.09);
+}
+
+/* Scrim — keeps the type legible and blends the photo into the page stock */
+.panel__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(to top, var(--panel-bg) 4%, rgba(242, 239, 231, 0.72) 34%, rgba(242, 239, 231, 0.12) 66%, transparent 100%);
+  transition: opacity var(--swell) var(--ease);
+}
+.panel--music .panel__media::after {
+  background:
+    linear-gradient(to top, var(--panel-bg) 4%, rgba(255, 247, 236, 0.72) 34%, rgba(255, 247, 236, 0.12) 66%, transparent 100%);
+}
+.panel:hover .panel__media::after,
+.panel:focus-visible .panel__media::after { opacity: 0.82; }
+
+/* Index numeral + rotated edge label */
+
+.panel__index {
+  position: absolute;
+  top: clamp(14px, 2.4vh, 26px);
+  left: var(--gutter);
+  z-index: 3;
+  font-family: var(--serif);
+  font-size: clamp(1.6rem, 3.4vw, 2.9rem);
+  font-style: italic;
+  line-height: 1;
+  color: var(--ink);
+  opacity: 0.34;
+  transition: opacity 420ms var(--ease), color 420ms var(--ease);
+}
+.panel:hover .panel__index,
+.panel:focus-visible .panel__index { opacity: 1; color: var(--panel-accent); }
+
+.panel__edge {
+  position: absolute;
+  top: clamp(14px, 2.4vh, 26px);
+  right: calc(var(--gutter) - 4px);
+  z-index: 3;
+  writing-mode: vertical-rl;
+  color: var(--ink-soft);
+  transition: color 420ms var(--ease);
+}
+.panel:hover .panel__edge,
+.panel:focus-visible .panel__edge { color: var(--ink); }
+
+/* Body */
+
+.panel__body {
+  position: absolute;
+  right: var(--gutter);
+  bottom: clamp(20px, 4vh, 46px);
+  left: var(--gutter);
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(8px, 1.2vh, 14px);
+  max-width: 46ch;
+}
+
+.panel__kicker {
+  display: inline-block;
+  padding: 6px 10px;
+  color: var(--ink);
+  background: var(--yellow);
+}
+
+.panel__title {
+  display: block;
+  font-family: var(--serif);
+  font-size: clamp(2.6rem, 6.4vw, 5.6rem);
+  font-weight: 400;
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+}
+
+.panel__desc {
+  display: block;
+  max-width: 40ch;
+  font-size: clamp(0.82rem, 1.05vw, 0.95rem);
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+.panel__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: clamp(2px, 0.8vh, 8px);
+  padding: 11px 16px;
+  color: var(--paper);
+  background: var(--ink);
+  transition: background-color 300ms var(--ease), color 300ms var(--ease);
+}
+.panel:hover .panel__cta,
+.panel:focus-visible .panel__cta {
+  color: var(--paper);
+  background: var(--panel-accent);
+}
+
+.panel__arrow {
+  width: 15px;
+  height: 15px;
+  flex: none;
+  transition: transform 380ms var(--ease);
+}
+.panel:hover .panel__arrow,
+.panel:focus-visible .panel__arrow { transform: translateX(5px); }
+
+/* ── Seam ────────────────────────────────────────────────────────────────── */
+
+.seam {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  transform: translateX(-50%);
+  transition: left var(--swell) var(--ease);
+}
+.split:has(.panel--research:hover) .seam,
+.split:has(.panel--research:focus-visible) .seam { left: 62%; }
+.split:has(.panel--music:hover) .seam,
+.split:has(.panel--music:focus-visible) .seam { left: 38%; }
+
+.seam__badge {
+  display: grid;
+  place-items: center;
+  width: clamp(46px, 5.4vw, 62px);
+  aspect-ratio: 1;
+  border: 1px solid var(--ink);
+  border-radius: 50%;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+/* ── Entrance ────────────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: no-preference) {
+  .bar, .panel, .seam__badge {
+    animation: rise 900ms var(--ease) both;
+  }
+  .panel--research { animation-delay: 90ms; }
+  .panel--music { animation-delay: 180ms; }
+  .bar--bottom { animation-delay: 260ms; }
+  .seam__badge { animation-delay: 340ms; }
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+.seam__badge { animation-name: pop; }
+@keyframes pop {
+  from { opacity: 0; transform: scale(0.6); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ── Narrow / touch ──────────────────────────────────────────────────────── */
+
+@media (max-width: 860px) {
+  body { min-height: 100svh; }
+
+  .split {
+    grid-template-columns: 1fr;
+    grid-auto-rows: minmax(310px, 1fr);
+  }
+  /* Hover-swell is a pointer affordance; stacked panels stay equal. */
+  .split:has(.panel--research:hover),
+  .split:has(.panel--research:focus-visible),
+  .split:has(.panel--music:hover),
+  .split:has(.panel--music:focus-visible) { grid-template-columns: 1fr; }
+
+  .panel + .panel { border-top: 1px solid var(--ink); border-left: 0; }
+
+  .seam {
+    top: 50%;
+    right: 0;
+    bottom: auto;
+    left: 0;
+    transform: translateY(-50%);
+  }
+  .split:has(.panel--research:hover) .seam,
+  .split:has(.panel--research:focus-visible) .seam,
+  .split:has(.panel--music:hover) .seam,
+  .split:has(.panel--music:focus-visible) .seam { left: 0; }
+
+  .panel__media img { object-position: 50% 18%; }
+  .panel__body { max-width: none; }
+
+  .bar { flex-wrap: wrap; gap: 12px var(--gutter); }
+  .bar__mid { margin-inline: 0; }
+  .email { margin-left: 0; }
+}
+
+@media (max-width: 560px) {
+  :root { --gutter: 20px; }
+  .bar__mid, .bar__end { display: none; }
+  .panel__edge { display: none; }
+
+  /* On a phone the panel is ~326px tall and the blurb ate two thirds of it.
+     Kicker + title + button already carry the choice, so the portrait — the
+     actual point of the page — gets the space back. */
+  .panel__desc { display: none; }
+  .socials { gap: 6px; }
+  .socials a { padding: 7px 9px; letter-spacing: 0.07em; }
+}
+
+/* Fallback for engines without :has() — panels simply never swell. */
+@supports not selector(:has(*)) {
+  .split { grid-template-columns: 1fr 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .split { transition: none; }
+}
