@@ -103,12 +103,19 @@ h1, p { margin: 0; }
   background: var(--ivory);
 }
 
-.bar--top { border-bottom: 1px solid var(--ink); }
+/* Three tracks so the socials sit optically centred in the bar regardless of
+   how wide the wordmark and the location line happen to be. */
+.bar--top {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  border-bottom: 1px solid var(--ink);
+}
+.bar--top .bar__end { justify-self: end; }
+
 .bar--bottom { border-top: 1px solid var(--ink); }
 
-.bar__mid,
+.bar__note,
 .bar__end,
-.socials a,
 .email,
 .panel__kicker,
 .panel__cta-label,
@@ -120,7 +127,7 @@ h1, p { margin: 0; }
   text-transform: uppercase;
 }
 
-.bar__mid { margin-inline: auto; color: var(--ink-soft); }
+.bar__note { color: var(--ink-soft); }
 .bar__end { color: var(--ink-soft); white-space: nowrap; }
 
 .wordmark {
@@ -136,24 +143,38 @@ h1, p { margin: 0; }
   vertical-align: top;
 }
 
-/* Socials — bordered chips, the same device the academic header uses */
+/* Socials — bordered icon chips, the same device the academic header uses */
 
 .socials {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  gap: 7px;
+  justify-self: center;
 }
 .socials a {
-  padding: 8px 12px;
+  width: 33px;
+  height: 33px;
+  display: grid;
+  place-items: center;
   border: 1px solid var(--ink);
   color: var(--ink);
-  transition: color 220ms var(--ease), background-color 220ms var(--ease);
+  transition: color 220ms var(--ease), background-color 220ms var(--ease),
+              transform 220ms var(--ease);
 }
 .socials a:hover,
 .socials a:focus-visible {
   color: var(--paper);
   background: var(--ink);
+  transform: translateY(-2px);
 }
+
+.icon { width: 15px; height: 15px; display: block; }
+.icon--fill { fill: currentColor; }
+.icon--stroke {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+.icon--stroke .icon__dot { fill: currentColor; stroke: none; }
 
 .email {
   margin-left: auto;
@@ -195,6 +216,7 @@ h1, p { margin: 0; }
 .panel {
   --panel-bg: var(--ivory);
   --panel-accent: var(--red);
+  --scrim: 242, 239, 231;          /* --ivory, as channels for the gradient */
 
   position: relative;
   display: block;
@@ -207,6 +229,7 @@ h1, p { margin: 0; }
 .panel--music {
   --panel-bg: var(--cream);
   --panel-accent: var(--red);
+  --scrim: 255, 247, 236;          /* --cream */
 }
 
 .panel + .panel { border-left: 1px solid var(--ink); }
@@ -220,16 +243,23 @@ h1, p { margin: 0; }
   overflow: hidden;
   z-index: -2;
 }
+/* Both source files are cropped so the eye line sits at 30% of image height.
+   Because cover scales to the panel width, an object-position-Y equal to that
+   same 30% pins the eyes to exactly 30% of the PANEL height whatever the panel
+   measures — so the two faces stay level at rest, mid-swell and stacked. Change
+   one number here and you must re-crop; see README. */
 .panel__media img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 50% 22%;
+  object-position: 50% 30%;
   filter: grayscale(0.78) contrast(1.05) brightness(0.98);
   transform: scale(1.04);
+  /* Pivot the zoom about the eye line too, so hovering one panel doesn't nudge
+     its face out of level with the other. */
+  transform-origin: 50% 30%;
   transition: filter var(--swell) var(--ease), transform 1100ms var(--ease);
 }
-.panel--music .panel__media img { object-position: 50% 30%; }
 
 .panel:hover .panel__media img,
 .panel:focus-visible .panel__media img {
@@ -237,19 +267,23 @@ h1, p { margin: 0; }
   transform: scale(1.09);
 }
 
-/* Scrim — keeps the type legible and blends the photo into the page stock */
+/* Scrim — keeps the type legible and blends the photo into the page stock.
+   It has to be fully clear by ~60% up, because the chin sits around 58% and the
+   old ramp (0.72 at 34%) washed straight over the face. Text lives below 39%. */
 .panel__media::after {
   content: "";
   position: absolute;
   inset: 0;
   z-index: 1;
-  background:
-    linear-gradient(to top, var(--panel-bg) 4%, rgba(242, 239, 231, 0.72) 34%, rgba(242, 239, 231, 0.12) 66%, transparent 100%);
+  background: linear-gradient(
+    to top,
+    rgb(var(--scrim)) 6%,
+    rgba(var(--scrim), 0.88) 24%,
+    rgba(var(--scrim), 0.50) 36%,
+    rgba(var(--scrim), 0.16) 46%,
+    transparent 60%
+  );
   transition: opacity var(--swell) var(--ease);
-}
-.panel--music .panel__media::after {
-  background:
-    linear-gradient(to top, var(--panel-bg) 4%, rgba(255, 247, 236, 0.72) 34%, rgba(255, 247, 236, 0.12) 66%, transparent 100%);
 }
 .panel:hover .panel__media::after,
 .panel:focus-visible .panel__media::after { opacity: 0.82; }
@@ -433,25 +467,32 @@ h1, p { margin: 0; }
   .split:has(.panel--music:hover) .seam,
   .split:has(.panel--music:focus-visible) .seam { left: 0; }
 
-  .panel__media img { object-position: 50% 18%; }
+  /* No object-position override here: the 30% value is what keeps the two
+     faces level, and it holds at every panel size. */
   .panel__body { max-width: none; }
 
-  .bar { flex-wrap: wrap; gap: 12px var(--gutter); }
-  .bar__mid { margin-inline: 0; }
-  .email { margin-left: 0; }
+  .bar--bottom { flex-wrap: wrap; gap: 10px var(--gutter); }
 }
 
 @media (max-width: 560px) {
   :root { --gutter: 20px; }
-  .bar__mid, .bar__end { display: none; }
+  .bar__end { display: none; }
   .panel__edge { display: none; }
+
+  /* Keep all three tracks: .bar__end is display:none here, so the third track
+     stays empty and the socials remain centred on the bar, not on the gap. */
+  .bar--top { padding-inline: 16px; }
+  .bar--bottom { justify-content: center; }
+  .bar__note { display: none; }
+  .email { margin-left: 0; }
 
   /* On a phone the panel is ~326px tall and the blurb ate two thirds of it.
      Kicker + title + button already carry the choice, so the portrait — the
      actual point of the page — gets the space back. */
   .panel__desc { display: none; }
-  .socials { gap: 6px; }
-  .socials a { padding: 7px 9px; letter-spacing: 0.07em; }
+  .socials { gap: 5px; }
+  .socials a { width: 30px; height: 30px; }
+  .icon { width: 14px; height: 14px; }
 }
 
 /* Fallback for engines without :has() — panels simply never swell. */
