@@ -23,7 +23,17 @@ swells it to 62%, lifts the colour back into the portrait, floods the button
 red and slides the `or` badge along the seam. The whole interaction is CSS —
 `:has()` on the split, no JavaScript on the page at all.
 
-The social links live as bordered icon chips in the centre of the top bar.
+The social links sit centred in the top bar as bordered chips carrying both an
+icon and its name. Below 860px the labels drop and the chips become icon-only
+squares — the labelled row needs ~517px of centre track, and under that the
+wordmark starts getting squeezed.
+
+## Caching
+
+`styles.css` is linked with a `?v=N` query and served `no-cache`. On a no-build
+static site a cached stylesheet will otherwise mask a deploy — it did exactly
+that during development, showing old layout against new markup. **Bump the `v=`
+number in `index.html` whenever `styles.css` changes.**
 
 On screens ≤560px the panels stack and the blurb is dropped: the portrait is
 the point, and the kicker + title + button already carry the choice.
@@ -33,7 +43,7 @@ the point, and the kicker + title + button already carry the choice.
 Static HTML and one stylesheet. No build step, no dependencies, no JS.
 
 ```
-index.html                 styles.css
+index.html                 styles.css  (linked as ?v=N — bump on change)
 images/                    two portraits, 900px wide, ~200KB total
 og.jpg                     1200×630 share card
 favicon.svg                apple-touch-icon.png

@@ -110,11 +110,8 @@ h1, p { margin: 0; }
   grid-template-columns: 1fr auto 1fr;
   border-bottom: 1px solid var(--ink);
 }
-.bar--top .bar__end { justify-self: end; }
-
 .bar--bottom { border-top: 1px solid var(--ink); }
 
-.bar__note,
 .bar__end,
 .email,
 .panel__kicker,
@@ -127,7 +124,6 @@ h1, p { margin: 0; }
   text-transform: uppercase;
 }
 
-.bar__note { color: var(--ink-soft); }
 .bar__end { color: var(--ink-soft); white-space: nowrap; }
 
 .wordmark {
@@ -151,14 +147,22 @@ h1, p { margin: 0; }
   justify-self: center;
 }
 .socials a {
-  width: 33px;
   height: 33px;
-  display: grid;
-  place-items: center;
+  padding: 0 11px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   border: 1px solid var(--ink);
   color: var(--ink);
   transition: color 220ms var(--ease), background-color 220ms var(--ease),
               transform 220ms var(--ease);
+}
+.socials__label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 .socials a:hover,
 .socials a:focus-visible {
@@ -169,10 +173,12 @@ h1, p { margin: 0; }
 
 .icon { width: 15px; height: 15px; display: block; }
 .icon--fill { fill: currentColor; }
+/* Instagram is drawn as an outline; a heavier stroke matches the optical weight
+   of the filled marks beside it at 15px. */
 .icon--stroke {
   fill: none;
   stroke: currentColor;
-  stroke-width: 2;
+  stroke-width: 2.3;
 }
 .icon--stroke .icon__dot { fill: currentColor; stroke: none; }
 
@@ -471,6 +477,11 @@ h1, p { margin: 0; }
      faces level, and it holds at every panel size. */
   .panel__body { max-width: none; }
 
+  /* The labelled row needs ~535px in the centre track; below this the wordmark
+     starts getting squeezed, so the chips go back to icon-only squares. */
+  .socials__label { display: none; }
+  .socials a { width: 33px; padding: 0; justify-content: center; }
+
   .bar--bottom { flex-wrap: wrap; gap: 10px var(--gutter); }
 }
 
@@ -483,7 +494,6 @@ h1, p { margin: 0; }
      stays empty and the socials remain centred on the bar, not on the gap. */
   .bar--top { padding-inline: 16px; }
   .bar--bottom { justify-content: center; }
-  .bar__note { display: none; }
   .email { margin-left: 0; }
 
   /* On a phone the panel is ~326px tall and the blurb ate two thirds of it.

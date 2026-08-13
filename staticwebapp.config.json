@@ -7,7 +7,7 @@
     },
     {
       "route": "/styles.css",
-      "headers": { "Cache-Control": "public, max-age=3600, must-revalidate" }
+      "headers": { "Cache-Control": "no-cache" }
     },
     {
       "route": "/favicon.svg",
